@@ -16,6 +16,8 @@ This project was created using `bun init` in bun v1.1.20. [Bun](https://bun.sh) 
 
 # demo
 
+test file [astro-libp2p-wizard.ts](https://github.com/mingder78/parsing-claude-ai-download-file/blob/main/astro-libp2p-wizard.ts)
+
 ```
 bun dev
 $ bun run index.ts astro-libp2p-wizard.ts
