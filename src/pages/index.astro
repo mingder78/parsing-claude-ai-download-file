@@ -1,0 +1,322 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+import WizardStep from '../components/WizardStep.astro';
+import CodeOutput from '../components/CodeOutput.astro';
+import NavigationButtons from '../components/NavigationButtons.astro';
+import { 
+  TRANSPORT_OPTIONS, 
+  MULTIPLEXER_OPTIONS, 
+  ENCRYPTION_OPTIONS, 
+  DISCOVERY_OPTIONS, 
+  PROTOCOL_OPTIONS 
+} from '../utils/config-generator';
+
+const currentStep = 1;
+const totalSteps = 4;
+---
+
+<Layout title="Libp2p Configuration Wizard">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Libp2p Configuration Wizard</h1>
+      <p class="text-lg text-gray-600">Generate custom libp2p configurations with TypeScript</p>
+    </header>
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
+      <ProgressBar 
+        currentStep={currentStep} 
+        totalSteps={totalSteps} 
+        stepTitle="Choose Transport Protocols" 
+      />
+
+      <!-- Step 1: Transport Protocols -->
+      <WizardStep 
+        stepNumber={1}
+        title="Choose Transport Protocols"
+        description="Select the transport protocols your libp2p node will support:"
+        isActive={true}
+      >
+        <div class="grid md:grid-cols-2 gap-4">
+          {TRANSPORT_OPTIONS.map((option) => (
+            <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+              <input 
+                type="checkbox" 
+                class="transport-option mt-1 mr-3" 
+                value={option.value}
+                data-import={option.import}
+                data-config={option.config}
+              />
+              <div>
+                <div class="font-semibold text-gray-800">{option.name}</div>
+                <div class="text-sm text-gray-600">{option.description}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+      </WizardStep>
+
+      <!-- Step 2: Stream Multiplexer -->
+      <WizardStep 
+        stepNumber={2}
+        title="Stream Multiplexer"
+        description="Choose how to multiplex streams over connections:"
+      >
+        <div class="space-y-4">
+          {MULTIPLEXER_OPTIONS.map((option) => (
+            <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+              <input 
+                type="radio" 
+                name="multiplexer" 
+                class="mt-1 mr-3" 
+                value={option.value}
+                data-import={option.import}
+                data-config={option.config}
+              />
+              <div>
+                <div class="font-semibold text-gray-800">{option.name}</div>
+                <div class="text-sm text-gray-600">{option.description}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+      </WizardStep>
+
+      <!-- Step 3: Security & Encryption -->
+      <WizardStep 
+        stepNumber={3}
+        title="Security & Encryption"
+        description="Configure connection security and encryption:"
+      >
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-medium mb-4 text-gray-800">Connection Encryption</h3>
+            <div class="space-y-4">
+              {ENCRYPTION_OPTIONS.map((option) => (
+                <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+                  <input 
+                    type="checkbox" 
+                    class="encryption-option mt-1 mr-3" 
+                    value={option.value}
+                    data-import={option.import}
+                    data-config={option.config}
+                  />
+                  <div>
+                    <div class="font-semibold text-gray-800">{option.name}</div>
+                    <div class="text-sm text-gray-600">{option.description}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-medium mb-4 text-gray-800">Peer Discovery</h3>
+            <div class="space-y-4">
+              {DISCOVERY_OPTIONS.map((option) => (
+                <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-colors">
+                  <input 
+                    type="checkbox" 
+                    class="discovery-option mt-1 mr-3" 
+                    value={option.value}
+                    data-import={option.import}
+                    data-config={option.config}
+                  />
+                  <div>
+                    <div class="font-semibold text-gray-800">{option.name}</div>
+                    <div class="text-sm text-gray-600">{option.description}</div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      </WizardStep>
+
+      <!-- Step 4: Configuration Options -->
+      <WizardStep 
+        stepNumber={4}
+        title="Additional Options"
+        description="Configure additional libp2p features:"
+      >
+        <div class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Max Connections</label>
+              <input 
+                type="number" 
+                id="max-connections" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                value="100" 
+                min="1"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Connection Manager</label>
+              <select 
+                id="connection-manager" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="basic">Basic Connection Manager</option>
+                <option value="advanced">Advanced Connection Manager</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-medium mb-4 text-gray-800">Protocol Support</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              {PROTOCOL_OPTIONS.map((option) => (
+                <label class="flex items-center p-3 border border-gray-200 rounded-lg">
+                  <input 
+                    type="checkbox" 
+                    class="protocol-option mr-3" 
+                    value={option.value}
+                    data-import={option.import}
+                    data-config={option.config}
+                  />
+                  <span class="text-sm">{option.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      </WizardStep>
+
+      <CodeOutput />
+
+      <NavigationButtons currentStep={currentStep} totalSteps={totalSteps} />
+    </div>
+  </div>
+
+  <script>
+    import { generateLibp2pConfig } from '../utils/config-generator';
+    import type { Libp2pConfig } from '../types/libp2p';
+
+    let currentStep = 1;
+    const totalSteps = 4;
+    
+    const stepTitles = {
+      1: 'Choose Transport Protocols',
+      2: 'Stream Multiplexer',
+      3: 'Security & Encryption',
+      4: 'Additional Options'
+    };
+
+    function updateProgress() {
+      const progress = (currentStep / totalSteps) * 100;
+      const progressBar = document.getElementById('progress-bar');
+      const currentStepEl = document.getElementById('current-step');
+      const stepTitleEl = document.getElementById('step-title');
+      
+      if (progressBar) progressBar.style.width = progress + '%';
+      if (currentStepEl) currentStepEl.textContent = currentStep.toString();
+      if (stepTitleEl) stepTitleEl.textContent = stepTitles[currentStep as keyof typeof stepTitles];
+    }
+
+    function showStep(step: number) {
+      document.querySelectorAll('.wizard-step').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      const stepEl = document.getElementById(`step-${step}`);
+      if (stepEl) stepEl.classList.add('active');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-button');
+      const nextButton = document.getElementById('next-button');
+      const generateButton = document.getElementById('generate-button');
+      
+      if (prevButton) prevButton.style.display = step === 1 ? 'none' : 'block';
+      
+      if (step === totalSteps) {
+        if (nextButton) nextButton.style.display = 'none';
+        if (generateButton) generateButton.style.display = 'block';
+      } else {
+        if (nextButton) nextButton.style.display = 'block';
+        if (generateButton) generateButton.style.display = 'none';
+      }
+    }
+
+    async function generateConfiguration() {
+      const config: Libp2pConfig = {
+        transports: Array.from(document.querySelectorAll('.transport-option:checked')).map(el => (el as HTMLInputElement).value),
+        streamMuxers: Array.from(document.querySelectorAll('input[name="multiplexer"]:checked')).map(el => (el as HTMLInputElement).value),
+        connectionEncryption: Array.from(document.querySelectorAll('.encryption-option:checked')).map(el => (el as HTMLInputElement).value),
+        peerDiscovery: Array.from(document.querySelectorAll('.discovery-option:checked')).map(el => (el as HTMLInputElement).value),
+        protocols: Array.from(document.querySelectorAll('.protocol-option:checked')).map(el => (el as HTMLInputElement).value),
+        maxConnections: parseInt((document.getElementById('max-connections') as HTMLInputElement)?.value) || 100,
+        connectionManager: (document.getElementById('connection-manager') as HTMLSelectElement)?.value || 'basic'
+      };
+
+      try {
+        const response = await fetch('/api/generate-config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(config)
+        });
+
+        const result = await response.json();
+        
+        const codeEl = document.getElementById('generated-code');
+        const installEl = document.getElementById('install-command');
+        
+        if (codeEl) codeEl.textContent = result.code;
+        if (installEl) installEl.textContent = result.installCommand;
+        
+        // Show output step
+        document.querySelectorAll('.wizard-step').forEach(el => {
+          el.classList.remove('active');
+        });
+        
+        const outputStep = document.getElementById('output-step');
+        if (outputStep) outputStep.classList.add('active');
+        
+        // Update progress
+        const progressBar = document.getElementById('progress-bar');
+        const stepTitle = document.getElementById('step-title');
+        if (progressBar) progressBar.style.width = '100%';
+        if (stepTitle) stepTitle.textContent = 'Generated Configuration';
+        
+      } catch (error) {
+        console.error('Failed to generate configuration:', error);
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const nextButton = document.getElementById('next-button');
+      const prevButton = document.getElementById('prev-button');
+      const generateButton = document.getElementById('generate-button');
+      const copyButton = document.getElementById('copy-button');
+
+      nextButton?.addEventListener('click', () => {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          showStep(currentStep);
+          updateProgress();
+        }
+      });
+
+      prevButton?.addEventListener('click', () => {
+        if (currentStep > 1) {
+          currentStep--;
+          showStep(currentStep);
+          updateProgress();
+        }
+      });
+
+      generateButton?.addEventListener('click', generateConfiguration);
+
+      copyButton?.addEventListener('click', async () => {
+        const codeEl = document.getElementById('generated-code');
+        const code = codeEl?.textContent || '';
+        
+        try {
+          await navigator.clipboard.writeText(code);
+          const button = copyButton;
+          

@@ -1,0 +1,37 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Generate custom libp2p configurations with TypeScript" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .wizard-step {
+        display: none;
+      }
+      .wizard-step.active {
+        display: block;
+      }
+      .code-output {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <slot />
+  </body>
+</html>
+
+
